@@ -12,6 +12,7 @@ import logging
 import re
 from datetime import datetime 
 import pandas as pd
+from time import sleep
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -124,12 +125,13 @@ class AvitoPageParser:
 class AvitoParser:
 
     @classmethod
-    def transform(cls,driver,max_pages=1024):
+    def transform(cls,driver,max_pages=1024,page_timeout=2):
         data = []
         for n in range(1,max_pages):
             page =  [ item for item in AvitoPageParser().transform(driver) if len(item['url'])>0 ]
             data.extend( page )
             logging.info(f'page {n}: {len(page)} items')
+            sleep(page_timeout)
             try:
                 cls._paginator_next(driver)
             except:
